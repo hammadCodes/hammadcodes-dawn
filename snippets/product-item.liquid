@@ -4,6 +4,7 @@
       class="product-item__image-ratio"
       style="padding-bottom: {% if section.settings.square_image %}100%{% else %}{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100.0  }}%{% endif %};"
     >
+      <p class="product-item-url-saving">SAVE {{ product.compare_at_price | minus:product.price | times:100 | divided_by:product.compare_at_price }}%</p>
       <p class="product-item-url-tag">{{ collection.title }}</p>
       {{
         product.featured_image
