@@ -98,7 +98,7 @@
           <div class="featured-collection__subheading rte">{{ section.settings.subheading }}</div>
         {% endif %}
       </div>
-      <div class="featured-collection__collection-container" role="region" aria-label="Featured Products" data-flickity='{ "cellAlign": "left", "contain": true, "groupCells": true, "prevNextButtons": true, "pageDots": true }'>
+      <div class="featured-collection__collection-container" role="region" aria-label="Featured Products">
         {% for product in collection %}
           {% render 'product-item', product: product %}
         {% endfor %}
