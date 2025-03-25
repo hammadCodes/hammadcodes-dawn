@@ -53,14 +53,19 @@
     color: black;
     border-radius: 8px;
     border: 1px solid #f0f0f0;
-    margin-right: 5px;
     flex-direction: column;
   }
   #shopify-section-{{ section.id }} .button-container {
     text-align: center;
     margin-top: 3.5rem;
   }
-
+  @media screen and (max-width: 749px) {
+    .featured-collection__collection-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  }
   @media screen and (min-width: 750px) {
     #shopify-section-{{ section.id }} {
       margin: 3rem 0;
