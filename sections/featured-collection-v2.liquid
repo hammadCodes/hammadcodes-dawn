@@ -165,11 +165,13 @@
     document.querySelectorAll('.button-container .button').forEach(button => {
       button.addEventListener('click', () => {
         document.querySelectorAll('.featured-collection__collection-container .product-item')
-        .forEach(item => item.classList.add('active'));
+          .forEach(item => item.classList.add('active'));
+        button.style.display = 'none';
       });
     });
   });
 </script>
+
 
 {% schema %}
 {
