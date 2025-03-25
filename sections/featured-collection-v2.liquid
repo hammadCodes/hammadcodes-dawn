@@ -31,21 +31,6 @@
   #shopify-section-{{ section.id }} .featured-collection__content-container {
     margin-bottom: 2.5rem;
   }
-  #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) {
-    display: flex;
-    overflow: hidden;
-  }
-  #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
-    min-width: 90%;
-  }
-  #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
-    width: 90%;
-  }
-  #shopify-section-{{ section.id }} .flickity-page-dots .dot {
-    margin: 0 2px;
-    width: 8px;
-    height: 8px;
-  }
   #shopify-section-{{ section.id }} .product-title {
     font-size: 16px;
     margin: 0;
@@ -70,36 +55,14 @@
     margin-right: 5px;
     flex-direction: column;
   }
-  #shopify-section-{{ section.id }} .flickity-viewport:focus-visible,
-  #shopify-section-{{ section.id }} .flickity-enabled:focus-visible {
-    outline: none;
-    outline-offset: none;
-    box-shadow: none;
-  }
   #shopify-section-{{ section.id }} .button-container {
     text-align: center;
     margin-top: 3.5rem;
-  }
-  #shopify-section-{{ section.id }} .flickity-prev-next-button {
-    width: 36px;
-    height: 36px;
-    background: black;
-    color: white;
-    transition: all 0.3s;
-  }
-  #shopify-section-{{ section.id }} .flickity-prev-next-button svg {
-    padding: 3px;
-  }
-  #shopify-section-{{ section.id }} .flickity-prev-next-button:hover {
-    background: rgb(0 0 0 / 80%);
   }
 
   @media screen and (min-width: 750px) {
     #shopify-section-{{ section.id }} {
       margin: 3rem 0;
-    }
-    #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
-      min-width: calc(100% / 2.5);
     }
     #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
       width: calc(100% / 2.5);
@@ -112,9 +75,6 @@
   @media screen and (min-width: 990px) {
     #shopify-section-{{ section.id }} {
       margin: 4rem 0;
-    }
-    #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
-      min-width: calc(100% / 4);
     }
     #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
       width: calc(100% / 4);
