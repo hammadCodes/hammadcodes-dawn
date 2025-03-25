@@ -107,7 +107,7 @@
       </div>
       <div class="featured-collection__collection-container" role="region" aria-label="Featured Products">
         {% for product in collection %}
-          {% render 'product-item', product: product %}
+          {% render 'product-item', product: product, loop: forloop.index %}
         {% endfor %}
       </div>
       {% if section.settings.show_view_all != blank %}
