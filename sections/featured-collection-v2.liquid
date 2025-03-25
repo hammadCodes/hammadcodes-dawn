@@ -79,12 +79,14 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-    #shopify-section-{{ section.id }} .button-container,
     #shopify-section-{{ section.id }} .product-item.hidden-m {
       display: none;
     }
   }
   @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .button-container {
+      display: none;
+    }
     #shopify-section-{{ section.id }} {
       margin: 3rem 0;
     }
