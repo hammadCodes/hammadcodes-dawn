@@ -111,6 +111,8 @@
     .featured-collection__collection-container {
       display: flex;
       gap: 10px;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
     }
     #shopify-section-{{ section.id }} {
       margin: 3rem 0;
@@ -118,6 +120,7 @@
     #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
       width: calc(100% / 2.5);
       min-width: calc(100% / 2.5);
+      scroll-snap-align: start;
     }
     #shopify-section-{{ section.id }} .product-item__content {
       text-align: center;
