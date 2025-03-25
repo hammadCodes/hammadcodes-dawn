@@ -1,5 +1,6 @@
 <div class="product-item {% if loop > 4 %}hidden-m{% endif %}">
   <a href="{{ product.url }}" class="product-item-url">
+    <p class="product-item-url-tag">{{ collection.title }}</p>
     <figure
       class="product-item__image-ratio"
       style="padding-bottom: {% if section.settings.square_image %}100%{% else %}{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100.0  }}%{% endif %};"
