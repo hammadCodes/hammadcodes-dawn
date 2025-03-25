@@ -1,0 +1,25 @@
+<div class="product-item">
+  <a href="{{ product.url }}" class="product-item-url">
+    <figure
+      class="product-item__image-ratio"
+      style="padding-bottom: {% if section.settings.square_image %}100%{% else %}{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100.0  }}%{% endif %};"
+    >
+      {{
+        product.featured_image
+        | image_url: width: product.featured_image.width, format: 'jpg'
+        | image_tag: class: 'product-item__image', decoding: 'async', data-sizes: 'auto', preload: true
+      }}
+      <figcaption class="product-title">{{ product.title }}</figcaption>
+    </figure>
+    <div class="product-item__content">
+      <h3 class="product-title">{{ product.title }}</h3>
+      <div class="product-prices">
+        {% if product.compare_at_price > product.price -%}
+          From {{ product.price_min | money_with_currency }}
+        {% else %}
+          {{ product.price | money_with_currency }}
+        {%- endif %}
+      </div>
+    </div>
+  </a>
+</div>
