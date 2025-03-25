@@ -1,4 +1,4 @@
-<div class="product-item">
+<div class="product-item {% if loop > 4 %}hidden-m{% endif %}">
   <a href="{{ product.url }}" class="product-item-url">
     <figure
       class="product-item__image-ratio"
