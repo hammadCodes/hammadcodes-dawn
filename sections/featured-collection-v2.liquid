@@ -113,8 +113,8 @@
           {% if section.settings.heading != blank %}
             <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
           {% endif %}
-          {% if section.settings.collection != blank %}
-            <a href="{{ section.settings.collection.url }}" class="featured-collection__shop-all">Shop All {{ section.settings.collection.title }}</a>
+          {% if section.settings.btn_text != blank %}
+            <a href="{{ section.settings.collection.url }}" class="featured-collection__shop-all">{{ section.settings.btn_text }}</a>
           {% endif %}
         </div>
         {% if section.settings.subheading != blank %}
@@ -126,13 +126,11 @@
           {% render 'product-item', product: product, loop: forloop.index, collection: section.settings.collection %}
         {% endfor %}
       </div>
-      {% if section.settings.show_view_all != blank %}
-        <div class="button-container">
-          <a class="button button--primary" href="{{ section.settings.collection.url }}" aria-label="{{ section.settings.btn_text }}">
-            {{ section.settings.btn_text }}
-          </a>
+      <div class="button-container">
+        <div class="button button--primary" >
+          Show more
         </div>
-      {% endif %}
+      </div>
     </div>
   </div>
 </div>
@@ -177,12 +175,6 @@
       "type": "product_list",
       "id": "products_list",
       "label": "Products list"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_view_all",
-      "label": "Show view all products button",
-      "default": true
     },
     {
       "type": "text",
