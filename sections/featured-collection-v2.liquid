@@ -1,6 +1,203 @@
-{% schema %}
-  {
-    "name": "Section name",
-    "settings": []
+{% if section.settings.collection != blank %}
+  {% assign collection = section.settings.collection.products %}
+{% else %}
+  {% assign collection = section.settings.products_list %}
+{% endif %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    margin: 2rem 0;
   }
+  #shopify-section-{{ section.id }} .product-item__image-ratio {
+    position: relative;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .product-item__image-ratio img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px 8px 0px 0px;
+  }
+  #shopify-section-{{ section.id }} .featured-collection__content-container {
+    margin-bottom: 2.5rem;
+  }
+  #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) {
+    display: flex;
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
+    min-width: 90%;
+  }
+  #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
+    width: 90%;
+  }
+  #shopify-section-{{ section.id }} .flickity-page-dots .dot {
+    margin: 0 2px;
+    width: 8px;
+    height: 8px;
+  }
+  #shopify-section-{{ section.id }} .product-title {
+    font-size: 16px;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #shopify-section-{{ section.id }} .featured-collection__heading {
+    font-size: 32px;
+  }
+  #shopify-section-{{ section.id }} .product-item__content {
+    text-align: center;
+    padding: 1.5rem;
+  }
+  #shopify-section-{{ section.id }} .product-item-url {
+    display: flex;
+    text-decoration: none;
+    color: black;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    margin-right: 5px;
+    flex-direction: column;
+  }
+  #shopify-section-{{ section.id }} .flickity-viewport:focus-visible,
+  #shopify-section-{{ section.id }} .flickity-enabled:focus-visible {
+    outline: none;
+    outline-offset: none;
+    box-shadow: none;
+  }
+  #shopify-section-{{ section.id }} .button-container {
+    text-align: center;
+    margin-top: 3.5rem;
+  }
+  #shopify-section-{{ section.id }} .flickity-prev-next-button {
+    width: 36px;
+    height: 36px;
+    background: black;
+    color: white;
+    transition: all 0.3s;
+  }
+  #shopify-section-{{ section.id }} .flickity-prev-next-button svg {
+    padding: 3px;
+  }
+  #shopify-section-{{ section.id }} .flickity-prev-next-button:hover {
+    background: rgb(0 0 0 / 80%);
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} {
+      margin: 3rem 0;
+    }
+    #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
+      min-width: calc(100% / 2.5);
+    }
+    #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
+      width: calc(100% / 2.5);
+    }
+    #shopify-section-{{ section.id }} .product-item__content {
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+  }
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} {
+      margin: 4rem 0;
+    }
+    #shopify-section-{{ section.id }} .featured-collection__collection-container:not(.flickity-enabled) .product-item {
+      min-width: calc(100% / 4);
+    }
+    #shopify-section-{{ section.id }} .featured-collection__collection-container .product-item {
+      width: calc(100% / 4);
+    }
+  }
+</style>
+
+<div class="featured-collection__outer-container">
+  <div class="page-width">
+    <div class="featured-collection__inner-container">
+      <div class="featured-collection__content-container">
+        {% if section.settings.heading != blank %}
+          <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subheading != blank %}
+          <div class="featured-collection__subheading rte">{{ section.settings.subheading }}</div>
+        {% endif %}
+      </div>
+      <div class="featured-collection__collection-container" role="region" aria-label="Featured Products" data-flickity='{ "cellAlign": "left", "contain": true, "groupCells": true, "prevNextButtons": true, "pageDots": true }'>
+        {% for product in collection %}
+          {% render 'product-item', product: product %}
+        {% endfor %}
+      </div>
+      {% if section.settings.show_view_all != blank %}
+        <div class="button-container">
+          <a class="button button--primary" href="{{ section.settings.collection.url }}" aria-label="{{ section.settings.btn_text }}">
+            {{ section.settings.btn_text }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+{% schema %}
+{
+  "name": "Featured collection v2",
+  "class": "featured-collection-v2__section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured products"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Sub heading",
+      "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium erat et libero facilisis iaculis. Praesent vehicula tortor in porttitor placerat. Praesent eu eleifend ex. Ut lacinia lobortis orci sed tristique. Nullam quis mauris non nibh venenatis dictum.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "square_image",
+      "label": "Make featured images square",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Leave this empty if you want to use Products List below"
+    },
+    {
+      "type": "product_list",
+      "id": "products_list",
+      "label": "Products list"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all products button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "View all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection v2"
+    }
+  ]
+}
 {% endschema %}
