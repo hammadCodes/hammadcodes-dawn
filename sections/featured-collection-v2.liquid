@@ -161,10 +161,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.button-container .button').forEach(button => {
       button.addEventListener('click', () => {
-        const productItem = document.querySelector('.featured-collection__collection-container .product-item');
-        if (productItem) {
-          productItem.classList.add('active');
-        }
+        document.querySelectorAll('.featured-collection__collection-container .product-item')
+        .forEach(item => item.classList.add('active'));
       });
     });
   });
