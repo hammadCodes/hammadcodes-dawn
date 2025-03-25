@@ -121,9 +121,14 @@
   <div class="page-width">
     <div class="featured-collection__inner-container">
       <div class="featured-collection__content-container">
-        {% if section.settings.heading != blank %}
-          <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
-        {% endif %}
+        <div class="featured-collection__content-container-inner">
+          {% if section.settings.heading != blank %}
+            <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
+          {% endif %}
+          {% if section.settings.collection != blank %}
+            <div class="featured-collection__heading">Shop All {{ section.settings.collection.title }}</div>
+          {% endif %}
+        </div>
         {% if section.settings.subheading != blank %}
           <div class="featured-collection__subheading rte">{{ section.settings.subheading }}</div>
         {% endif %}
