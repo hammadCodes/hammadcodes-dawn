@@ -15,7 +15,7 @@
         "heading": "Featured products",
         "subheading": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pretium erat et libero facilisis iaculis. Praesent vehicula tortor in porttitor placerat. Praesent eu eleifend ex. Ut lacinia lobortis orci sed tristique. Nullam quis mauris non nibh venenatis dictum.</p>",
         "square_image": true,
-        "collection": "frontpage",
+        "collection": "best-sellers",
         "products_list": [],
         "show_view_all": true,
         "btn_text": "View all"
