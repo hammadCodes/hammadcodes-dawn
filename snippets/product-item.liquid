@@ -19,9 +19,9 @@
       <h3 class="product-title">{{ product.title }}</h3>
       <div class="product-prices">
         {% if product.compare_at_price > product.price -%}
-          From {{ product.price_min | money_with_currency }}
+          From {{ product.price_min | money_without_currency }}
         {% else %}
-          {{ product.price | money_with_currency }}
+          {{ product.price | money_without_currency }}
         {%- endif %}
       </div>
     </div>
