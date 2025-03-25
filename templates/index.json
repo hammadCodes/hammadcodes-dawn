@@ -13,12 +13,12 @@
       "type": "featured-collection-v2",
       "settings": {
         "heading": "Best sellers",
+        "tag": "Best seller",
         "subheading": "",
         "square_image": true,
         "collection": "best-sellers",
         "products_list": [],
-        "show_view_all": true,
-        "btn_text": "View all"
+        "btn_text": "Shop All Best Sellers"
       }
     },
     "image_popup_slider_v2_Y4Xngi": {
