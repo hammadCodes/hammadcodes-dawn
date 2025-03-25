@@ -1,0 +1,675 @@
+<announcement-bar
+  data-layout="marquee"
+  data-mobile-layout="marquee"
+  data-autorotate="{{ section.settings.autorotate }}"
+  data-autorotate-speed="{{ section.settings.autorotate_speed }}"
+  data-block-count="{{ section.blocks.size }}"
+  data-speed="{{ section.settings.speed }}"
+  data-direction="{{ section.settings.direction }}"
+>
+  <div class="announcement-slider">
+    {%- for block in section.blocks -%}
+      <p class="announcement-text" style=" min-width: max-content;">
+        {{ block.settings.text | escape }}
+      </p>
+    {%- endfor -%}
+  </div>
+</announcement-bar>
+
+<script>
+  
+  window.theme = window.theme || {};
+  theme.config = {
+    mqlSmall: false,
+    mediaQuerySmall: 'screen and (max-width: 749px)',
+    isTouch: ('ontouchstart' in window) || window.DocumentTouch && window.document instanceof DocumentTouch || window.navigator.maxTouchPoints || window.navigator.msMaxTouchPoints ? true : false,
+    rtl: document.documentElement.getAttribute('dir') === 'rtl' ? true : false
+  };
+  const mql = window.matchMedia(theme.config.mediaQuerySmall);
+  theme.config.mqlSmall = mql.matches;
+    mql.onchange = (e) => {
+      if (e.matches) {
+        theme.config.mqlSmall = true;
+        document.dispatchEvent(new CustomEvent('matchSmall'));
+      }
+      else {
+        theme.config.mqlSmall = false;
+        document.dispatchEvent(new CustomEvent('unmatchSmall'));
+      }
+    }
+function Geeks() {
+  class AnnouncementBar extends HTMLElement {
+  constructor() {
+    super();
+
+    this.config = {
+      autorotate: this.dataset.autorotate === 'true',
+      autorotateSpeed: parseInt(this.dataset.autorotateSpeed) * 1000,
+      moveTime: parseFloat(this.dataset.speed), // 100px going to move for
+      space: 100, // 100px
+    };
+
+      this.initOnDesktop();
+
+    document.addEventListener('matchSmall', () => {
+      this.unload();
+      this.initOnMobile();
+    });
+
+    document.addEventListener('unmatchSmall', () => {
+      this.unload();
+      this.initOnDesktop();
+    });
+  }
+
+  initOnDesktop() {
+    switch(this.dataset.layout) {
+      case 'carousel':
+        this.initCarousel();
+        break;
+
+      case 'marquee':
+        this.initMarquee();
+        break;
+
+      default:
+        this.initMarqueeOptimized();
+    }
+  }
+
+  initOnMobile() {
+    switch(this.dataset.mobileLayout) {
+      case 'carousel':
+        this.initCarousel();
+        break;
+
+      case 'marquee':
+        this.initMarquee();
+        break;
+    }
+  }
+
+  unload() {
+    if (this.flickity && typeof this.flickity.destroy === 'function') {
+      this.flickity.destroy();
+      this.removeNextPrevListeners();
+    }
+
+    if (this.classList.contains('marquee')) {
+      this.classList.remove('marquee');
+      this.querySelectorAll('.announcement-slider[aria-hidden]').forEach((slider) => {
+        slider.remove();
+      });
+    }
+
+    if (this.observer && typeof this.observer.unobserve === 'function') {
+      this.observer.unobserve(this);
+    }
+  }
+
+  initCarousel() {
+    if (this.dataset.blockCount == 1) {
+      return;
+    }
+
+    const slider = this.querySelector('.announcement-slider');
+    setTimeout(() => {
+      this.flickity = new Flickity(slider, {
+        accessibility: false,
+        rightToLeft: theme.config.rtl,
+        prevNextButtons: false,
+        pageDots: false,
+        wrapAround: true,
+        setGallerySize: false,
+        autoPlay: this.config.autorotate ? this.config.autorotateSpeed : false,
+      });
+    });
+
+    this.prevButton = this.querySelector('button[name="previous"]');
+    this.nextButton = this.querySelector('button[name="next"]');
+
+    this.onNextPrevClick = this.handleNextPrevClick.bind(this);
+    this.prevButton && this.prevButton.addEventListener('click', this.onNextPrevClick);
+    this.nextButton && this.nextButton.addEventListener('click', this.onNextPrevClick);
+  }
+
+  removeNextPrevListeners() {
+    this.prevButton && this.prevButton.removeEventListener('click', this.onNextPrevClick);
+    this.nextButton && this.nextButton.removeEventListener('click', this.onNextPrevClick);
+  }
+
+  handleNextPrevClick(event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    
+    if (target.name === 'next') {
+      this.flickity && this.flickity.next();
+    }
+    else if (target.name === 'previous') {
+      this.flickity && this.flickity.previous();
+    }
+  }
+
+  initMarqueeOptimized() {
+    setTimeout(() => {
+      this.marqueeAnimation();
+    });
+
+    // pause when out of view
+    this.observer = new IntersectionObserver((entries, _observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.isAnimated && this.classList.remove('marquee--paused');
+        }
+        else {
+          this.isAnimated && this.classList.add('marquee--paused');
+        }
+      });
+    }, {rootMargin: '0px 0px 50px 0px'});
+
+    this.observer.observe(this);
+
+    window.addEventListener('resize', this.marqueeAnimation.bind(this));
+  }
+
+  marqueeAnimation() {
+    const slider = this.querySelector('.announcement-slider');
+
+    if (slider.scrollWidth > this.clientWidth) {
+      if (!this.isAnimated) {
+        for (let index = 0; index < 2; index++) {
+          const clone = slider.cloneNode(true);
+          clone.setAttribute('aria-hidden', true);
+          this.appendChild(clone);
+        }
+        
+        this.classList.add('marquee');
+        this.style.setProperty('--duration', `${(slider.scrollWidth / this.config.space) * this.config.moveTime}s`);
+        this.isAnimated = true;
+      }
+    }
+    else if (this.isAnimated) {
+      for (let index = 0; index < 2; index++) {
+        this.removeChild(this.lastElementChild);
+      }
+      this.classList.remove('marquee');
+      this.isAnimated = false;
+    }
+  }
+
+  initMarquee() {
+    setTimeout(() => {
+      const slider = this.querySelector('.announcement-slider');
+
+      for (let index = 0; index < 10; index++) {
+        const clone = slider.cloneNode(true);
+        clone.setAttribute('aria-hidden', true);
+        this.appendChild(clone);
+      }
+  
+      this.classList.add('marquee');
+      this.style.setProperty('--duration', `${(slider.clientWidth / this.config.space) * this.config.moveTime}s`);
+    });
+
+    // pause when out of view
+    this.observer = new IntersectionObserver((entries, _observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.classList.remove('marquee--paused');
+        }
+        else {
+          this.classList.add('marquee--paused');
+        }
+      });
+    }, {rootMargin: '0px 0px 50px 0px'});
+
+    this.observer.observe(this);
+  }
+}
+  customElements.define('announcement-bar', AnnouncementBar);
+}
+Geeks();
+
+
+
+
+</script>
+<style>
+    .announcement-bar {
+    overflow: hidden;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    line-height: normal;
+    position: relative;
+    z-index: 30;
+    text-align: center;
+    color: rgb(var(--color-foreground));
+    background: var(--gradient-background);
+    background-color: rgb(var(--color-background));
+  }
+
+  .announcement-bar--withBorder {
+    border-bottom: 0.1rem solid rgb(var(--color-border));
+  }
+
+  announcement-bar {
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+
+  .announcement-slider__slide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .announcement-slider__slide span:empty {
+    display: none;
+  }
+
+  .announcement-link {
+    display: block;
+    text-decoration: none;
+    color: rgb(var(--color-foreground));
+  }
+
+  @media screen and (hover: hover) {
+    .announcement-link:active,
+    .announcement-link:hover {
+      color: rgb(var(--color-foreground));
+    }
+  }
+
+  .announcement-text {
+    display: block;
+    font-size: var(--font-size);
+  }
+
+  @media screen and (min-width: 750px) {
+    announcement-bar[data-layout=carousel] .announcement-slider__slide {
+      display: none;
+    }
+
+    announcement-bar[data-layout=carousel] .announcement-slider__slide:first-child {
+      display: flex;
+    }
+
+    announcement-bar[data-layout=carousel] .announcement-text {
+      display: inline;
+    }
+
+    announcement-bar[data-layout=carousel] .flickity-enabled .announcement-slider__slide {
+      display: flex;
+    }
+
+    announcement-bar:not([data-layout=carousel]) {
+      display: flex;
+      justify-content: center;
+    }
+
+    announcement-bar:not([data-layout=carousel]) .announcement__buttons {
+      display: none;
+    }
+
+    announcement-bar:not([data-layout=carousel]) .announcement-slider {
+      display: flex;
+      flex: 1 1 auto;
+      column-gap: 5rem;
+    }
+
+    announcement-bar:not([data-layout=carousel]) .announcement-slider__slide {
+      white-space: nowrap;
+    }
+
+    announcement-bar:not([data-layout=carousel]).marquee .announcement-slider {
+      padding: 0 2.5rem;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      animation-duration: var(--duration);
+      animation-play-state: running;
+      width: max-content;
+    }
+
+    announcement-bar:not([data-layout=carousel])[data-direction=left].marquee .announcement-slider {
+      animation-name: marquee-left;
+    }
+
+    announcement-bar:not([data-layout=carousel])[data-direction=right].marquee .announcement-slider {
+      animation-name: marquee-right;
+    }
+
+    announcement-bar:not([data-layout=carousel]).marquee:hover .announcement-slider,
+    announcement-bar:not([data-layout=carousel]).marquee--paused .announcement-slider {
+      animation-play-state: paused;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    announcement-bar:not([data-layout=carousel]) .announcement-slider {
+      column-gap: 7rem;
+    }
+
+    announcement-bar:not([data-layout=carousel]).marquee .announcement-slider {
+      padding: 0 3.5rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    announcement-bar[data-mobile-layout=carousel] .announcement-slider__slide {
+      display: none;
+    }
+
+    announcement-bar[data-mobile-layout=carousel] .announcement-slider__slide:first-child {
+      display: flex;
+    }
+
+    announcement-bar[data-mobile-layout=carousel] .flickity-enabled .announcement-slider__slide {
+      display: flex;
+    }
+
+    announcement-bar[data-mobile-layout=marquee] {
+      display: flex;
+      justify-content: center;
+    }
+
+    announcement-bar[data-mobile-layout=marquee] .announcement__buttons {
+      display: none;
+    }
+
+    announcement-bar[data-mobile-layout=marquee] .announcement-slider {
+      display: flex;
+      flex: 1 1 auto;
+      column-gap: 5rem;
+      padding: 0 2.5rem;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      animation-duration: var(--duration);
+      animation-play-state: running;
+      width: max-content;
+    }
+
+    announcement-bar[data-mobile-layout=marquee][data-direction=left] .announcement-slider {
+      animation-name: marquee-left;
+    }
+
+    announcement-bar[data-mobile-layout=marquee][data-direction=right] .announcement-slider {
+      animation-name: marquee-right;
+    }
+
+    announcement-bar[data-mobile-layout=marquee] .announcement-slider__slide {
+      white-space: nowrap;
+    }
+
+    announcement-bar[data-mobile-layout=marquee].marquee--paused .announcement-slider {
+      animation-play-state: paused;
+    }
+  }
+
+  @keyframes marquee-left {
+    0% {
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
+    }
+    100% {
+      transform: translate3d(-100%, 0, 0);
+    }
+  }
+
+  @keyframes marquee-right {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+      visibility: visible;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .announcement__buttons {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .announcement__button {
+    color: rgba(var(--color-foreground), 0.75);
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    width: 3.4rem;
+    height: 100%;
+    cursor: pointer;
+    pointer-events: visible;
+  }
+
+  @media screen and (hover: hover) {
+    .announcement__button:hover {
+      color: rgb(var(--color-foreground));
+    }
+  }
+
+  .announcement__button .icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    pointer-events: none;
+  }
+
+  .announcement__button--next .icon {
+    transform: scaleX(-1);
+  }
+
+  announcement-bar .flickity-enabled:not(:only-child) {
+    padding: 0 3.4rem;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "only_homepage",
+      "label": "t:sections.announcement-bar.settings.only_homepage.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.announcement-bar.settings.layout.options__3.label"
+        },
+        {
+          "value": "marquee",
+          "label": "t:sections.announcement-bar.settings.layout.options__1.label"
+        },
+        {
+          "value": "carousel",
+          "label": "t:sections.announcement-bar.settings.layout.options__2.label"
+        }
+      ],
+      "default": "default",
+      "label": "t:sections.announcement-bar.settings.layout.label"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "options": [
+        {
+          "value": "marquee",
+          "label": "t:sections.announcement-bar.settings.layout.options__1.label"
+        },
+        {
+          "value": "carousel",
+          "label": "t:sections.announcement-bar.settings.layout.options__2.label"
+        }
+      ],
+      "default": "carousel",
+      "label": "t:sections.announcement-bar.settings.mobile_layout.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.announcement-bar.settings.header__1.content"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.announcement-bar.settings.paragraph__1.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "autorotate",
+      "default": false,
+      "label": "t:sections.announcement-bar.settings.autorotate.label"
+    },
+    {
+      "type": "range",
+      "id": "autorotate_speed",
+      "label": "t:sections.announcement-bar.settings.autorotate_speed.label",
+      "max": 9,
+      "min": 3,
+      "step": 2,
+      "unit": "t:sections.announcement-bar.settings.autorotate_speed.unit",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "default": false,
+      "label": "t:sections.announcement-bar.settings.show_navigation.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.announcement-bar.settings.header__2.content"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.announcement-bar.settings.paragraph__2.content"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.announcement-bar.settings.direction.options__1.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.announcement-bar.settings.direction.options__2.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.announcement-bar.settings.direction.label"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 0.5,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "t:sections.announcement-bar.settings.speed.label",
+      "unit": "t:sections.announcement-bar.settings.speed.unit",
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.colors.header.content",
+      "info": "t:sections.all.colors.header.info"
+    },
+    {
+      "type": "color",
+      "id": "colors_text",
+      "label": "t:sections.all.colors.colors_text.label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "colors_background",
+      "label": "t:sections.all.colors.colors_background.label",
+      "default": "#1a1b18"
+    },
+    {
+      "type": "color_background",
+      "id": "gradient_background",
+      "label": "t:sections.all.colors.gradient_background.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.header.content"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 36,
+      "step": 2,
+      "unit": "t:sections.all.padding.padding_top.unit",
+      "label": "t:sections.all.padding.padding_top.label",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 36,
+      "step": 2,
+      "unit": "t:sections.all.padding.padding_bottom.unit",
+      "label": "t:sections.all.padding.padding_bottom.label",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:sections.announcement-bar.blocks.announcement.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Welcome to our store",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "text_on_mobile",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_on_mobile.label"
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "default": 13,
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_size.label",
+          "unit": "t:sections.announcement-bar.blocks.announcement.settings.text_size.unit"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}

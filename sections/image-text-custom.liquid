@@ -1,0 +1,91 @@
+<div id="{{ section.id }}" class="image-text-custom_{{ section.id }} {% if section.settings.include_margins %}page-width{% endif %}">
+  <div class="container">
+    {%- for block in section.blocks -%}
+    <style>
+     .image-text-custom_{{ section.id }} .item--text--{{ block.id }}{
+        background:{{ block.settings.bg }};
+      }
+    </style>
+    <div class="item item--text item--text--{{ block.id }}">
+      <h1>{{ block.settings.title }}</h1>
+    </div>
+    <div class="item">
+      <img src="{{ block.settings.image | img_url:'600x' }}" alt="{{ block.settings.image.alt }}" />
+    </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+
+<style>
+  .item {
+    width: 100%
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .image-text-custom_{{ section.id }} img{
+   width:100%;
+  }
+  .container > div {
+    flex: 50%; /* or - flex: 0 50% - or - flex-basis: 50% - */
+    /*demo*/
+  }
+  .item--text{
+    background:white;
+  }
+</style>
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Image with text New",
+  "tag": "section",
+  "class": "section image-text-custom",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "include_margins",
+      "default": true,
+      "label": "Page width for section"
+    }
+    
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading Block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Lorem Ipsum"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+        ,
+        {
+          "type": "color",
+          "id": "bg",
+          "label": "Background Color",
+          "default": "#000000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with text preset"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,156 @@
+<style>
+  #shopify-section-{{ section.id }} .sticky-delivery-container__main {
+    padding:10px;
+    position: fixed;
+    bottom: 0;
+    background: white;
+    width: 100%;
+    box-shadow: 0px 0px 10px 0px rgba(0 0 0 / 7%);
+    visibility: hidden;
+    z-index: -10;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  #shopify-section-{{ section.id }} .sticky-delivery-container__main.active {
+    visibility: visible;
+    z-index: 10;
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .product-image {
+    line-height: 0;
+  }
+  #shopify-section-{{ section.id }} .product-info-sticky {
+    display: flex;
+    gap: 0px;
+    flex-direction: column;
+  }
+  #shopify-section-{{ section.id }} .product-title-sticky {
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .product-info--container {
+    display: none;
+  }
+  #shopify-section-{{ section.id }} .product-image img {
+    height: 55px;
+  }
+  #shopify-section-{{ section.id }} .product__price.product__price--compare {
+    text-decoration: line-through;
+    margin-right: 5px;
+  }
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} .product-info--container {
+      display: flex;
+      gap: 1rem;
+    }
+    #shopify-section-{{ section.id }} .product-info--container__outer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+  }
+  @media screen and (min-width: 1024px) {
+  }
+</style>
+
+<div class="sticky-delivery-container__main">
+  {% assign current_variant = product.selected_or_first_available_variant %}
+  <div class="sticky-delivery-container {{ section.settings.container_class }}">
+    <div class="product-info--container__outer">
+      <div class="product-info--container">
+        <div class="product-image">
+          <img
+            width=""
+            height=""
+            loading="lazy"
+            src="{{ product.featured_image | img_url: 'small' }}"
+            alt="{{ product.featured_image.alt }}"
+          >
+        </div>
+        <div class="product-info-sticky">
+          <h3 class="product-title-sticky">{{ product.title }}</h3>
+          <div class="product-price-sticky">
+            {% if current_variant.compare_at_price > current_variant.price %}
+              <span class="product__price product__price--compare">
+                {{ current_variant.compare_at_price | money_without_currency }}
+              </span>
+            {% endif %}
+            <span class="product__price{% if current_variant.compare_at_price > current_variant.price %} sale-price{% endif %}">
+              {{ current_variant.price | money_without_currency }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-button__container">
+        <div class="button button-primary btn btn--primary btn--full button--full-width product__submit__add-js">
+          {{ section.settings.btn_text }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var add_to_cart_element = "{{ section.settings.add_to_cart_element }}"; // Make sure it's a string
+    var addToCartBtn = document.querySelector(add_to_cart_element);
+    var stickyDeliveryContainer = document.querySelector('#shopify-section-{{ section.id }} .sticky-delivery-container__main');
+
+    if (addToCartBtn && stickyDeliveryContainer) {
+      if (addToCartBtn.offsetTop <= window.pageYOffset) {
+        if (window.pageYOffset + window.innerHeight > document.documentElement.scrollHeight - 250) {
+          stickyDeliveryContainer.classList.remove('active');
+        } else {
+          stickyDeliveryContainer.classList.add('active');
+        }
+      } else {
+        stickyDeliveryContainer.classList.remove('active');
+      }
+    }
+  });
+
+  document.querySelector('.product__submit__add-js').addEventListener('click', function() {
+    var addToCartElement = document.querySelector("{{ section.settings.add_to_cart_element }}");
+    if (addToCartElement) {
+      addToCartElement.click();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sticky CTA",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "container_class",
+      "label": "Container class",
+      "default": "page-width",
+      "info": "Add your theme's container class here"
+    },
+    {
+      "type": "textarea",
+      "id": "add_to_cart_element",
+      "label": "Add to cart element",
+      "default": "[type='submit']",
+      "info": "Add your theme's add to cart class or ID or attribute with identifier like '.' for class or '#' for ID"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "ADD TO CART"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky CTA"
+    }
+  ]
+}
+{% endschema %}

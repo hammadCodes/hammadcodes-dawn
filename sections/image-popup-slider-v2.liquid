@@ -1,0 +1,414 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    padding: 4rem 0px;
+    background: {{ section.settings.bg_m }};
+  }
+  #shopify-section-{{ section.id }} .page-width {
+    max-width: 100%;
+    padding: 0 round(down, calc((100vw - var(--viewport-content)) / 2), 1px);
+    scroll-padding: 0 round(down, calc((100vw - var(--viewport-content)) / 2), 1px);
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--image {
+    position: relative;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--image img {
+    //position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 28px;
+    max-height: 680px;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2__slider-outer {
+    display: grid;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2__slider {
+    display: flex;
+    gap: 20px;
+    padding: 25px 0;
+    overflow-x: scroll;
+    padding-block-end: 38px;
+    scroll-padding: 5px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2__slider {
+    padding-left: round(down, calc((100vw - var(--viewport-content)) / 2), 1px);
+    padding-right: round(down, calc((100vw - var(--viewport-content)) / 2), 1px);
+    scroll-padding: 0 round(down, calc((100vw - var(--viewport-content)) / 2), 1px);
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--content__container:hover {
+    transform: scale(1.015);
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--content__container {
+    transition: all 0.3s;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2-container__item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: 80%;
+    min-width: 80%;
+    transition: all 0.3s;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--popup__content {
+    display: none;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--popup__content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgb(0 0 0 / 48%);
+    justify-content: center;
+    align-items: center;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--popup__content.active {
+    display: flex;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--popup__content-inner {
+    height: 100%;
+    width: 100%;
+    padding: 3rem;
+    background: white;
+    max-width: min(1260px,87.5vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 28px;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--content__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    padding: 32px;
+    line-height: normal;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--heading {
+    font-size: 14px;
+    margin: 0;
+    padding-bottom: 10px;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--subheading {
+    font-size: 21px;
+    font-weight: bold;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2-container__item svg {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2__slider::-webkit-scrollbar {
+    height: 0px;
+  }
+  #shopify-section-{{ section.id }} .scroll-arrows__container svg {
+    width: 36px;
+    padding: 10px;
+    background: #e8e8ed;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .scroll-arrows__container {
+    line-height: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  #shopify-section-{{ section.id }} .svg-close {
+    position: relative !important;
+    width: 35px;
+    height: 35px;
+    background: #333336;
+    fill: white;
+    padding: 5px;
+    border-radius: 100px;
+    margin-left: auto;
+    display: block;
+    right: 0 !important;
+    top: 0px;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .image-popup-slider-v2--main-heading {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0 0 25px 0;
+  }
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      background: {{ section.settings.bg_d }};
+    }
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--subheading {
+      font-size: 28px;
+    }
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--heading {
+      font-size: 17px;
+    }
+    #shopify-section-{{ section.id }} .image-popup-slider-v2__slider {
+      gap: 30px;
+    }
+    #shopify-section-{{ section.id }} .image-popup-slider-v2-container__item {
+      width: calc(100% / 2.5);
+      min-width:calc(100% / 2.5);
+    }
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--main-heading {
+      font-size: 56px;
+    }
+  }
+  @media screen and (min-width: 1024px){
+    #shopify-section-{{ section.id }} .image-popup-slider-v2-container__item {
+      width: calc(100% / 3.5);
+      min-width: calc(100% / 3.5);
+    }
+  }
+  @media only screen and (max-width: 480px) {
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--image img {
+      max-height: 480px;
+    }
+  }
+  @media only screen and (max-width: 734px) {
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--image img {
+      max-height: 560px;
+    }
+  }
+  @media only screen and (max-width: 1068px) {
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--image img {
+      max-height: 628px;
+    }
+  }
+  @media only screen and (min-width: 1441px) {
+    #shopify-section-{{ section.id }} .image-popup-slider-v2--image img {
+      max-height: 740px;
+    }
+  }
+</style>
+
+<div class="image-popup-slider-v2-container" style="--viewport-content: min(87.5vw, 1680px);">
+  <div class="image-popup-slider-v2-page-width">
+
+
+    <div class="page-width">
+      <h2 class="image-popup-slider-v2--main-heading">
+        {{- section.settings.heading -}}
+      </h2>
+    </div>
+
+    
+    <div class="image-popup-slider-v2__slider-outer">
+      <div class="image-popup-slider-v2__slider">
+        {% for block in section.blocks %}
+          <div class="image-popup-slider-v2-container__item">
+            <div class="image-popup-slider-v2-container__inner">
+              
+              {% if block.settings.popup_content != blank or block.settings.popup_html != blank or block.settings.popup_page != blank %}
+              <div class="image-popup-slider-v2--popup__content">
+                <div class="image-popup-slider-v2--popup__content-inner">
+                  <svg class="svg-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M12.121 10l3.44-3.44a1.5 1.5 0 1 0-2.121-2.12L10 7.878l-3.44-3.44A1.5 1.5 0 1 0 4.44 6.56L7.878 10l-3.44 3.44a1.5 1.5 0 1 0 2.121 2.12L10 12.122l3.44 3.44a1.495 1.495 0 0 0 2.12 0 1.5 1.5 0 0 0 0-2.122L12.12 10z"></path>
+                  </svg>
+                  {{ block.settings.popup_content }}
+                  {{ block.settings.popup_html }}
+                  {{ block.settings.popup_page }}
+                </div>
+              </div>
+              {% endif %}
+              
+              {% if block.settings.image != blank %}
+                <div 
+                  class="image-popup-slider-v2--image"
+                  style="padding-bottom-: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100.0  }}%;"
+                > 
+                  {{
+                    block.settings.image
+                    | image_url: width: section.settings.image.width
+                    | image_tag: class: 'lazyload', decoding: 'async', data-sizes: 'auto', preload: true
+                  }}
+                  <div class="image-popup-slider-v2--content__container">
+                    <h4 class="image-popup-slider-v2--heading" style="color: {{ block.settings.color }};">
+                      {{- block.settings.heading -}}
+                    </h4>
+                    <div class="image-popup-slider-v2--subheading" style="color: {{ block.settings.color }};">
+                      {{ block.settings.subheading }}
+                    </div>
+                  </div>
+                  <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24.9837" cy="24.9837" r="20.8333" fill="#333336"/>
+                    <path d="M17.5781 25H32.4219" stroke="white" stroke-width="3.90625" stroke-linecap="round"/>
+                    <path d="M25 17.5781L25 32.4219" stroke="white" stroke-width="3.90625" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>         
+    </div>
+                      
+  </div>
+                      
+  <div class="page-width">
+    <div class="scroll-arrows__container">
+      <svg class="arrow-prev-hc" viewBox="0 0 100 100">
+        <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path>
+      </svg>
+      <svg class="arrow-next-hc" viewBox="0 0 100 100">
+        <path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow" transform="translate(100, 100) rotate(180) "></path>
+      </svg>
+    </div>
+  </div>
+                      
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.querySelector(".image-popup-slider-v2__slider");
+    const nextArrow = document.querySelector(".arrow-next-hc");
+    const prevArrow = document.querySelector(".arrow-prev-hc");
+    if (!slider || !nextArrow || !prevArrow) {
+      console.error("Slider or arrows not found!");
+      return;
+    }
+    // Function to calculate max item width
+    const getItemWidth = () => {
+      let maxWidth = 0;
+      document.querySelectorAll(".image-popup-slider-v2-container__item").forEach(item => {
+        maxWidth = Math.max(maxWidth, item.getBoundingClientRect().width);
+      });
+      return maxWidth;
+    };
+
+    // Scroll 70% of max item width
+    const scrollAmount = getItemWidth() * 0.7;
+    nextArrow.addEventListener("click", () => {
+      slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+    prevArrow.addEventListener("click", () => {
+      slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+    
+    document.addEventListener("click", function (event) {
+    // Open popup
+    if (event.target.closest(".image-popup-slider-v2--content__container")) {
+      let popup = event.target.closest(".image-popup-slider-v2-container__item")
+                              .querySelector(".image-popup-slider-v2--popup__content");
+      
+      if (popup) {
+        popup.classList.add("active");
+      }
+    }
+
+    // Close popup when clicking outside inner content
+    if (event.target.classList.contains("image-popup-slider-v2--popup__content")) {
+      event.target.classList.remove("active");
+    }
+
+    // Close popup when clicking the close button
+    if (event.target.closest(".svg-close")) {
+      let popup = event.target.closest(".image-popup-slider-v2--popup__content");
+      if (popup) {
+        popup.classList.remove("active");
+      }
+    }
+  });
+  // Close popup on Escape key press
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".image-popup-slider-v2--popup__content.active").forEach(popup => popup.classList.remove("active"));
+    }
+  });
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Image popup slider v2",
+  "class": "image-popup-slider-v2",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+    },
+    {
+      "type":"color_background",
+      "id":"bg_d",
+      "label":"Background Desktop",
+      "default":"#ffffff"
+    },
+    {
+      "type":"color_background",
+      "id":"bg_m",
+      "label":"Background Mobile",
+      "default":"#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Color",
+      "default": "#000000",
+    },
+  ],
+  "blocks": [
+    {
+      "type": "block",
+      "name": "Image block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#ffffff",
+          "info": "Heading and subheading color"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Produktivita",
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Sub Heading",
+          "default": "Pracovat můžeš, kudy chodíš.",
+        },
+        {
+          "type": "richtext",
+          "id": "popup_content",
+          "label": "Popup content",
+        },
+        {
+          "type": "liquid",
+          "id": "popup_html",
+          "label": "Popup html",
+          "info": "Can be used for HTML/Liquid in popup",
+        },
+        {
+          "type": "page",
+          "id": "popup_page",
+          "label": "Popup page",
+          "info": "Page content will show in popup",
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image popup slider v2"
+    }
+  ]
+}
+{% endschema %}

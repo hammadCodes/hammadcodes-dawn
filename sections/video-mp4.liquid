@@ -1,0 +1,22 @@
+<video id="video-{{ section.settings.video.id }}" style="width: 100%;" controlsList="nodownload" class="video-js" controls poster="{{ section.settings.video.preview_image | image_url: width: section.settings.video.width  }}" video-alt="{{ section.settings.video.alt }}" video-duration="{{ section.settings.video.duration }}"  playsinline="playsinline" preload="metadata">
+  {% for video_source in section.settings.video.sources %}
+    <source src="{{ video_source.url }}" type="{{ video_source.mime_type }}" />
+  {% endfor %}
+</video>
+{% schema %}
+  {
+    "name": "MP4 Video",
+    "class": "index-section--hero",
+    "settings": [
+      {
+        "type": "video",
+        "id": "video",
+        "label": "A Shopify-hosted video"
+      }
+    ],
+    "presets": [{
+      "name": "MP4 Video",
+      "category": "Video"
+    }]
+  }
+{% endschema %}
